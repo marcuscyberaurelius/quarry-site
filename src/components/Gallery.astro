@@ -4,38 +4,249 @@ import { X, ArrowLeft, ArrowRight, Expand } from '@lucide/astro';
 import Photo from './Photo.astro';
 import { images, type ImageKey } from '../data/images';
 import { translations, type Locale } from '../i18n';
-interface Props { locale: Locale; }
+interface Props {
+  locale: Locale;
+}
 const { locale } = Astro.props;
 const text = translations[locale];
-const keys: ImageKey[] = ['quarry','plant','engineering','roadwork','trucks','gravel'];
-const gallery = await Promise.all(keys.map(async key => ({ src: (await getImage({src:images[key],width:Math.min(images[key].width,1280),format:'webp'})).src, alt: text.images[key] })));
+const keys: ImageKey[] = ['quarry', 'plant', 'engineering', 'roadwork', 'trucks', 'gravel'];
+const gallery = await Promise.all(
+  keys.map(async (key) => ({
+    src: (
+      await getImage({ src: images[key], width: Math.min(images[key].width, 1280), format: 'webp' })
+    ).src,
+    alt: text.images[key],
+  })),
+);
 ---
-<div class="gallery-grid" data-gallery={JSON.stringify(gallery)}>{keys.map((key,index)=><button type="button" data-gallery-index={index} aria-label={`${text.projects.open}: ${text.images[key]}`}><Photo image={key} locale={locale} sizes="(min-width: 1000px) 400px, (min-width: 600px) 45vw, 90vw" maxWidth={800}/><span><Expand size={20}/></span></button>)}</div>
+
+<div class="gallery-grid" data-gallery={JSON.stringify(gallery)}>
+  {keys.map((key, index) => (
+    <button
+      type="button"
+      data-gallery-index={index}
+      aria-label={`${text.projects.open}: ${text.images[key]}`}
+    >
+      <Photo
+        image={key}
+        locale={locale}
+        sizes="(min-width: 1000px) 400px, (min-width: 600px) 45vw, 90vw"
+        maxWidth={800}
+      />
+      <span>
+        <Expand size={20} />
+      </span>
+    </button>
+  ))}
+</div>
 <dialog id="lightbox" aria-label={text.common.gallery}>
-  <div class="lightbox-content"><button class="lightbox-close" aria-label={text.common.close} title={text.common.close}><X size={26}/></button><figure><img id="lightbox-image" alt="" width="1024" height="559"/><figcaption id="lightbox-caption" aria-live="polite"></figcaption></figure><div class="lightbox-controls"><button data-previous aria-label={text.common.previous} title={text.common.previous}><ArrowLeft size={24}/></button><span data-image-count></span><button data-next aria-label={text.common.next} title={text.common.next}><ArrowRight size={24}/></button></div></div>
+  <div class="lightbox-content">
+    <button class="lightbox-close" aria-label={text.common.close} title={text.common.close}>
+      <X size={26} />
+    </button>
+    <figure>
+      <img id="lightbox-image" alt="" width="1024" height="559" />
+      <figcaption id="lightbox-caption" aria-live="polite"></figcaption>
+    </figure>
+    <div class="lightbox-controls">
+      <button data-previous aria-label={text.common.previous} title={text.common.previous}>
+        <ArrowLeft size={24} />
+      </button>
+      <span data-image-count></span>
+      <button data-next aria-label={text.common.next} title={text.common.next}>
+        <ArrowRight size={24} />
+      </button>
+    </div>
+  </div>
 </dialog>
 <script>
   const gallery = document.querySelector<HTMLElement>('[data-gallery]');
   const dialog = document.querySelector<HTMLDialogElement>('#lightbox');
   if (gallery && dialog) {
-    const items: {src:string;alt:string}[] = JSON.parse(gallery.dataset.gallery || '[]');
+    const items: { src: string; alt: string }[] = JSON.parse(gallery.dataset.gallery || '[]');
     const image = dialog.querySelector<HTMLImageElement>('#lightbox-image')!;
     const caption = dialog.querySelector<HTMLElement>('#lightbox-caption')!;
     const count = dialog.querySelector<HTMLElement>('[data-image-count]')!;
     let current = 0;
     let opener: HTMLElement | null = null;
-    const formatter = new Intl.NumberFormat(document.documentElement.lang === 'sq' ? 'sq-AL' : 'en-GB');
-    const show = (index:number) => { current = (index + items.length) % items.length; image.src = items[current].src; image.alt = items[current].alt; caption.textContent = items[current].alt; count.textContent = `${formatter.format(current+1)} / ${formatter.format(items.length)}`; };
-    gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-index]').forEach(button => button.addEventListener('click',()=> {opener=button;show(Number(button.dataset.galleryIndex));dialog.showModal();document.body.classList.add('modal-open');}));
-    dialog.querySelector('.lightbox-close')?.addEventListener('click',()=>dialog.close());
-    dialog.querySelector('[data-previous]')?.addEventListener('click',()=>show(current-1));
-    dialog.querySelector('[data-next]')?.addEventListener('click',()=>show(current+1));
-    dialog.addEventListener('keydown',event=>{if(event.key==='ArrowRight'){event.preventDefault();show(current+1);}if(event.key==='ArrowLeft'){event.preventDefault();show(current-1);}});
-    dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
-    dialog.addEventListener('close',()=>{document.body.classList.remove('modal-open');opener?.focus();});
-    let touchStart=0;
-    image.addEventListener('touchstart',event=>{touchStart=event.changedTouches[0].clientX;},{passive:true});
-    image.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>60)show(current+(delta<0?1:-1));},{passive:true});
+    const formatter = new Intl.NumberFormat(
+      document.documentElement.lang === 'sq' ? 'sq-AL' : 'en-GB',
+    );
+    const show = (index: number) => {
+      current = (index + items.length) % items.length;
+      image.src = items[current].src;
+      image.alt = items[current].alt;
+      caption.textContent = items[current].alt;
+      count.textContent = `${formatter.format(current + 1)} / ${formatter.format(items.length)}`;
+    };
+    gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-index]').forEach((button) =>
+      button.addEventListener('click', () => {
+        opener = button;
+        show(Number(button.dataset.galleryIndex));
+        dialog.showModal();
+        document.body.classList.add('modal-open');
+      }),
+    );
+    dialog.querySelector('.lightbox-close')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-previous]')?.addEventListener('click', () => show(current - 1));
+    dialog.querySelector('[data-next]')?.addEventListener('click', () => show(current + 1));
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(current + 1);
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(current - 1);
+      }
+    });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('modal-open');
+      opener?.focus();
+    });
+    let touchStart = 0;
+    image.addEventListener(
+      'touchstart',
+      (event) => {
+        touchStart = event.changedTouches[0].clientX;
+      },
+      { passive: true },
+    );
+    image.addEventListener(
+      'touchend',
+      (event) => {
+        const delta = event.changedTouches[0].clientX - touchStart;
+        if (Math.abs(delta) > 60) show(current + (delta < 0 ? 1 : -1));
+      },
+      { passive: true },
+    );
   }
 </script>
-<style>.gallery-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}.gallery-grid>button{padding:0;border:0;background:var(--ink);position:relative;height:220px;overflow:hidden}.gallery-grid :global(img){width:100%;height:220px;object-fit:cover}.gallery-grid>button:nth-child(3) :global(img){object-fit:contain}.gallery-grid>button>span{position:absolute;right:12px;bottom:12px;width:44px;height:44px;display:grid;place-items:center;background:white;color:var(--blue)}.gallery-grid>button:hover>span{background:var(--yellow)}#lightbox{position:fixed;inset:0;width:100%;height:100dvh;max-height:none;max-width:none;padding:20px;border:0;margin:0;background:#101318f5;color:white;overflow:auto}#lightbox[open]{display:flex;align-items:center;justify-content:center}#lightbox::backdrop{background:#101318f5}.lightbox-content{position:relative;width:min(100%,1100px);margin:auto;pointer-events:none}.lightbox-content figure,.lightbox-content button,.lightbox-controls{pointer-events:auto}.lightbox-close{margin:0 0 14px auto}.lightbox-content button{display:grid;place-items:center;min-width:48px;height:48px;background:#fff;color:var(--ink);border:0}.lightbox-content button:hover{background:var(--yellow)}#lightbox-image{display:block;width:auto;max-width:100%;height:auto;max-height:65dvh;object-fit:contain;margin:auto}figcaption{font-size:16px;line-height:1.5;text-align:center;margin:20px auto 0;max-width:750px}.lightbox-controls{display:flex;align-items:center;justify-content:center;gap:32px;margin-top:22px}#lightbox button:focus-visible{outline-color:var(--yellow)}@media(min-width:600px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(min-width:1000px){.gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.gallery-grid>button,.gallery-grid :global(img){height:250px}}</style>
+<style>
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .gallery-grid > button {
+    padding: 0;
+    border: 0;
+    background: var(--ink);
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+  .gallery-grid :global(img) {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+  .gallery-grid > button:nth-child(3) :global(img) {
+    object-fit: contain;
+  }
+  .gallery-grid > button > span {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: white;
+    color: var(--blue);
+  }
+  .gallery-grid > button:hover > span {
+    background: var(--yellow);
+  }
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    max-width: none;
+    padding: 20px;
+    border: 0;
+    margin: 0;
+    background: #101318f5;
+    color: white;
+    overflow: auto;
+  }
+  #lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #lightbox::backdrop {
+    background: #101318f5;
+  }
+  .lightbox-content {
+    position: relative;
+    width: min(100%, 1100px);
+    margin: auto;
+    pointer-events: none;
+  }
+  .lightbox-content figure,
+  .lightbox-content button,
+  .lightbox-controls {
+    pointer-events: auto;
+  }
+  .lightbox-close {
+    margin: 0 0 14px auto;
+  }
+  .lightbox-content button {
+    display: grid;
+    place-items: center;
+    min-width: 48px;
+    height: 48px;
+    background: #fff;
+    color: var(--ink);
+    border: 0;
+  }
+  .lightbox-content button:hover {
+    background: var(--yellow);
+  }
+  #lightbox-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 65dvh;
+    object-fit: contain;
+    margin: auto;
+  }
+  figcaption {
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+    margin: 20px auto 0;
+    max-width: 750px;
+  }
+  .lightbox-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 22px;
+  }
+  #lightbox button:focus-visible {
+    outline-color: var(--yellow);
+  }
+  @media (min-width: 600px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1000px) {
+    .gallery-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .gallery-grid > button,
+    .gallery-grid :global(img) {
+      height: 250px;
+    }
+  }
+</style>

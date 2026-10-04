@@ -1,25 +1,61 @@
 ---
 import { translations, type Locale } from '../i18n';
-interface Props { locale: Locale; categories: Record<string,string>; label: string; }
+interface Props {
+  locale: Locale;
+  categories: Record<string, string>;
+  label: string;
+}
 const { locale, categories, label } = Astro.props;
 const text = translations[locale];
 ---
-<div class="filter-bar" role="group" aria-label={label} data-filters hidden><button type="button" data-filter="all" aria-pressed="true">{text.common.all}</button>{Object.entries(categories).map(([key,value])=><button type="button" data-filter={key} aria-pressed="false">{value}</button>)}</div>
-<p class="filter-count" role="status" aria-live="polite" data-filter-count data-suffix={text.common.results}></p>
+
+<div class="filter-bar" role="group" aria-label={label} data-filters hidden>
+  <button type="button" data-filter="all" aria-pressed="true">
+    {text.common.all}
+  </button>
+  {Object.entries(categories).map(([key, value]) => (
+    <button type="button" data-filter={key} aria-pressed="false">
+      {value}
+    </button>
+  ))}
+</div>
+<p
+  class="filter-count"
+  role="status"
+  aria-live="polite"
+  data-filter-count
+  data-suffix={text.common.results}
+></p>
 <script>
-  document.querySelectorAll<HTMLElement>('[data-filter-scope]').forEach(scope => {
+  document.querySelectorAll<HTMLElement>('[data-filter-scope]').forEach((scope) => {
     const bar = scope.querySelector<HTMLElement>('[data-filters]');
     const cards = [...scope.querySelectorAll<HTMLElement>('[data-category]')];
     const count = scope.querySelector<HTMLElement>('[data-filter-count]');
-    const formatter = new Intl.NumberFormat(document.documentElement.lang === 'sq' ? 'sq-AL' : 'en-GB');
+    const formatter = new Intl.NumberFormat(
+      document.documentElement.lang === 'sq' ? 'sq-AL' : 'en-GB',
+    );
     const apply = (category: string) => {
-      cards.forEach(card => { card.hidden = category !== 'all' && card.dataset.category !== category; });
-      bar?.querySelectorAll<HTMLButtonElement>('button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.filter === category)));
-      if(count) count.textContent = `${formatter.format(cards.filter(card=>!card.hidden).length)} ${count.dataset.suffix}`;
+      cards.forEach((card) => {
+        card.hidden = category !== 'all' && card.dataset.category !== category;
+      });
+      bar
+        ?.querySelectorAll<HTMLButtonElement>('button')
+        .forEach((button) =>
+          button.setAttribute('aria-pressed', String(button.dataset.filter === category)),
+        );
+      if (count)
+        count.textContent = `${formatter.format(cards.filter((card) => !card.hidden).length)} ${count.dataset.suffix}`;
     };
-    if(bar) bar.hidden = false;
-    bar?.querySelectorAll<HTMLButtonElement>('button').forEach(button=>button.addEventListener('click',()=>apply(button.dataset.filter || 'all')));
+    if (bar) bar.hidden = false;
+    bar
+      ?.querySelectorAll<HTMLButtonElement>('button')
+      .forEach((button) =>
+        button.addEventListener('click', () => apply(button.dataset.filter || 'all')),
+      );
     apply('all');
-    window.addEventListener('hashchange',()=>{ apply('all'); document.getElementById(location.hash.slice(1))?.scrollIntoView(); });
+    window.addEventListener('hashchange', () => {
+      apply('all');
+      document.getElementById(location.hash.slice(1))?.scrollIntoView();
+    });
   });
 </script>

@@ -6,11 +6,44 @@ import Gallery from '../components/Gallery.astro';
 import CTA from '../components/CTA.astro';
 import { demoProjects } from '../data/projects';
 import { translations, type Locale } from '../i18n';
-interface Props { locale: Locale; }
+interface Props {
+  locale: Locale;
+}
 const { locale } = Astro.props;
 const text = translations[locale];
 ---
-<Intro label={text.projects.label} title={text.projects.title} body={text.projects.intro}/>
-<section class="section"><div class="container" data-filter-scope><h2 class="sr-only">{text.nav.projects}</h2><Filter locale={locale} categories={text.projects.categories} label={text.nav.projects}/><div class="grid three projects">{demoProjects.map(project=><ProjectCard project={project} locale={locale}/>)}</div><p class="fine note">{text.common.photoNote}</p></div></section>
-<section class="section tint"><div class="container"><p class="eyebrow">{text.projects.galleryLabel}</p><h2>{text.projects.galleryTitle}</h2><div class="gallery-wrap"><Gallery locale={locale}/></div></div></section><CTA locale={locale}/>
-<style>.projects{row-gap:48px}.note{margin-top:34px}.gallery-wrap{margin-top:36px}</style>
+
+<Intro label={text.projects.label} title={text.projects.title} body={text.projects.intro} />
+<section class="section">
+  <div class="container" data-filter-scope>
+    <h2 class="sr-only">{text.nav.projects}</h2>
+    <Filter locale={locale} categories={text.projects.categories} label={text.nav.projects} />
+    <div class="grid three projects">
+      {demoProjects.map((project) => (
+        <ProjectCard project={project} locale={locale} />
+      ))}
+    </div>
+    <p class="fine note">{text.common.photoNote}</p>
+  </div>
+</section>
+<section class="section tint">
+  <div class="container">
+    <p class="eyebrow">{text.projects.galleryLabel}</p>
+    <h2>{text.projects.galleryTitle}</h2>
+    <div class="gallery-wrap">
+      <Gallery locale={locale} />
+    </div>
+  </div>
+</section>
+<CTA locale={locale} />
+<style>
+  .projects {
+    row-gap: 48px;
+  }
+  .note {
+    margin-top: 34px;
+  }
+  .gallery-wrap {
+    margin-top: 36px;
+  }
+</style>

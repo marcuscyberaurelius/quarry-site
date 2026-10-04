@@ -7,10 +7,13 @@
   },
   "scripts": {
     "check": "astro check",
-    "dev": "astro dev",
+    "dev": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "playwright test",
+    "format": "prettier --write src scripts tests astro.config.mjs playwright.config.ts package.json README.md CREDITS.md",
+    "format:check": "prettier --check src scripts tests astro.config.mjs playwright.config.ts package.json README.md CREDITS.md"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -23,5 +26,12 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0"
   }
 }

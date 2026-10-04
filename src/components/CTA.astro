@@ -1,9 +1,64 @@
 ---
 import { ArrowUpRight } from '@lucide/astro';
 import { translations, href, type Locale } from '../i18n';
-interface Props { locale: Locale; }
+interface Props {
+  locale: Locale;
+}
 const { locale } = Astro.props;
 const text = translations[locale];
 ---
-<section class="cta"><div class="container"><div><p class="eyebrow">{text.common.ctaLabel}</p><h2>{text.common.cta}</h2><p>{text.common.ctaBody}</p></div><a class="button" href={href(locale,'quote')}>{text.common.quote}<ArrowUpRight size={20}/></a></div></section>
-<style>.cta{background:var(--blue);color:white;padding:52px 0}.cta .container{display:flex;flex-direction:column;gap:30px;align-items:flex-start}.cta .eyebrow{color:#fff;font-size:12px}.cta h2{font-size:38px}.cta p:not(.eyebrow){margin-top:18px;color:#e0e8f5;max-width:650px}.cta .button{flex-shrink:0}@media(min-width:1000px){.cta{padding:64px 0}.cta .container{flex-direction:row;align-items:center;justify-content:space-between}.cta h2{font-size:50px}}</style>
+
+<section class="cta">
+  <div class="container">
+    <div>
+      <p class="eyebrow">{text.common.ctaLabel}</p>
+      <h2>{text.common.cta}</h2>
+      <p>{text.common.ctaBody}</p>
+    </div>
+    <a class="button" href={href(locale, 'quote')}>
+      {text.common.quote}
+      <ArrowUpRight size={20} />
+    </a>
+  </div>
+</section>
+<style>
+  .cta {
+    background: var(--blue);
+    color: white;
+    padding: 52px 0;
+  }
+  .cta .container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+  }
+  .cta .eyebrow {
+    color: #fff;
+    font-size: 12px;
+  }
+  .cta h2 {
+    font-size: 38px;
+  }
+  .cta p:not(.eyebrow) {
+    margin-top: 18px;
+    color: #e0e8f5;
+    max-width: 650px;
+  }
+  .cta .button {
+    flex-shrink: 0;
+  }
+  @media (min-width: 1000px) {
+    .cta {
+      padding: 64px 0;
+    }
+    .cta .container {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cta h2 {
+      font-size: 50px;
+    }
+  }
+</style>

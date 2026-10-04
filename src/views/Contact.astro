@@ -4,12 +4,148 @@ import Intro from '../components/Intro.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import { translations, type Locale } from '../i18n';
 import { demoCompany } from '../data/company';
-interface Props { locale: Locale; }
+interface Props {
+  locale: Locale;
+}
 const { locale } = Astro.props;
-const text=translations[locale];
+const text = translations[locale];
 ---
-<Intro label={text.contact.label} title={text.contact.title} body={text.contact.intro}/>
-<section class="section"><div class="container"><div class="grid four contact-cards"><article><Phone size={29} stroke-width={1.3}/><h2>{text.contact.phone}</h2><a href={`tel:${demoCompany.tel}`}>{demoCompany.phone}</a></article><article><Mail size={29} stroke-width={1.3}/><h2>{text.contact.email}</h2><a href={`mailto:${demoCompany.email}`}>{demoCompany.email}</a></article><article><MapPin size={29} stroke-width={1.3}/><h2>{text.contact.address}</h2><p>{text.contact.addressText}</p><a class="text-link" href={demoCompany.mapLink} target="_blank" rel="noopener noreferrer">{text.common.maps}<ArrowUpRight size={16}/></a></article><article><Clock size={29} stroke-width={1.3}/><h2>{text.contact.hours}</h2><p>{text.common.weekdays}<br/>{text.common.saturday}</p></article></div></div></section>
-<section class="map-section"><div class="container"><iframe title={text.contact.mapTitle} src={demoCompany.map} loading="lazy" referrerpolicy="no-referrer" width="1200" height="280"></iframe><p class="fine">{text.contact.mapNote}</p></div></section>
-<section class="section"><div class="container contact-layout"><div><h2>{text.form.contactTitle}</h2><EnquiryForm locale={locale}/></div><aside><HardHat size={36} stroke-width={1.3}/><h2>{text.contact.visit}</h2><p class="lead">{text.contact.visitBody}</p><p class="fine">{text.common.demo}</p></aside></div></section>
-<style>.contact-cards article{border-top:2px solid var(--blue);padding-top:24px}.contact-cards svg{color:var(--blue);margin-bottom:20px}.contact-cards h2{font-size:27px;margin-bottom:16px}.contact-cards p,.contact-cards a{font-size:16px}.contact-cards a{display:flex;align-items:center;min-height:44px;overflow-wrap:anywhere;word-break:break-word}.contact-cards a:hover{text-decoration:underline}.contact-cards .text-link svg{margin:0}.map-section iframe{display:block;width:100%;max-width:100%;height:280px;border:1px solid var(--line);background:var(--stone)}.map-section p{margin-top:14px}.contact-layout{display:grid;gap:55px;grid-template-columns:minmax(0,1fr)}.contact-layout h2{margin-bottom:30px}.contact-layout aside{border-top:1px solid var(--line);padding-top:30px}.contact-layout aside>svg{color:var(--blue);margin-bottom:24px}.contact-layout aside .fine{margin-top:28px}@media(min-width:1000px){.contact-layout{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:100px}.contact-layout aside{padding:36px;background:var(--stone);align-self:start;border:0}.contact-layout aside h2{font-size:36px}}</style>
+
+<Intro label={text.contact.label} title={text.contact.title} body={text.contact.intro} />
+<section class="section">
+  <div class="container">
+    <div class="grid four contact-cards">
+      <article>
+        <Phone size={29} stroke-width={1.3} />
+        <h2>{text.contact.phone}</h2>
+        <a href={`tel:${demoCompany.tel}`}>{demoCompany.phone}</a>
+      </article>
+      <article>
+        <Mail size={29} stroke-width={1.3} />
+        <h2>{text.contact.email}</h2>
+        <a href={`mailto:${demoCompany.email}`}>{demoCompany.email}</a>
+      </article>
+      <article>
+        <MapPin size={29} stroke-width={1.3} />
+        <h2>{text.contact.address}</h2>
+        <p>{text.contact.addressText}</p>
+        <a class="text-link" href={demoCompany.mapLink} target="_blank" rel="noopener noreferrer">
+          {text.common.maps}
+          <ArrowUpRight size={16} />
+        </a>
+      </article>
+      <article>
+        <Clock size={29} stroke-width={1.3} />
+        <h2>{text.contact.hours}</h2>
+        <p>
+          {text.common.weekdays}
+          <br />
+          {text.common.saturday}
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="map-section">
+  <div class="container">
+    <iframe
+      title={text.contact.mapTitle}
+      src={demoCompany.map}
+      loading="lazy"
+      referrerpolicy="no-referrer"
+      width="1200"
+      height="280"
+    ></iframe>
+    <p class="fine">{text.contact.mapNote}</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container contact-layout">
+    <div>
+      <h2>{text.form.contactTitle}</h2>
+      <EnquiryForm locale={locale} />
+    </div>
+    <aside>
+      <HardHat size={36} stroke-width={1.3} />
+      <h2>{text.contact.visit}</h2>
+      <p class="lead">{text.contact.visitBody}</p>
+      <p class="fine">{text.common.demo}</p>
+    </aside>
+  </div>
+</section>
+<style>
+  .contact-cards article {
+    border-top: 2px solid var(--blue);
+    padding-top: 24px;
+  }
+  .contact-cards svg {
+    color: var(--blue);
+    margin-bottom: 20px;
+  }
+  .contact-cards h2 {
+    font-size: 27px;
+    margin-bottom: 16px;
+  }
+  .contact-cards p,
+  .contact-cards a {
+    font-size: 16px;
+  }
+  .contact-cards a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .contact-cards a:hover {
+    text-decoration: underline;
+  }
+  .contact-cards .text-link svg {
+    margin: 0;
+  }
+  .map-section iframe {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 280px;
+    border: 1px solid var(--line);
+    background: var(--stone);
+  }
+  .map-section p {
+    margin-top: 14px;
+  }
+  .contact-layout {
+    display: grid;
+    gap: 55px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .contact-layout h2 {
+    margin-bottom: 30px;
+  }
+  .contact-layout aside {
+    border-top: 1px solid var(--line);
+    padding-top: 30px;
+  }
+  .contact-layout aside > svg {
+    color: var(--blue);
+    margin-bottom: 24px;
+  }
+  .contact-layout aside .fine {
+    margin-top: 28px;
+  }
+  @media (min-width: 1000px) {
+    .contact-layout {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 100px;
+    }
+    .contact-layout aside {
+      padding: 36px;
+      background: var(--stone);
+      align-self: start;
+      border: 0;
+    }
+    .contact-layout aside h2 {
+      font-size: 36px;
+    }
+  }
+</style>

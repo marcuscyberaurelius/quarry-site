@@ -14,11 +14,14 @@ for (const name of ['machine1.png', 'machine2.png', 'machine3.jpg']) {
   } catch {
     await access(target);
   }
-  const image = sharp(await import('node:fs/promises').then(fs => fs.readFile(target)));
+  const image = sharp(await import('node:fs/promises').then((fs) => fs.readFile(target)));
   const metadata = await image.metadata();
   if (name.endsWith('.png')) {
-    await image.extract({ left: 0, top: 0, width: metadata.width, height: metadata.height - 25 })
-      .toFile(new URL(name.replace('.png', '-clean.png'), destination).pathname.replace(/^\/(\w:)/, '$1'));
+    await image
+      .extract({ left: 0, top: 0, width: metadata.width, height: metadata.height - 25 })
+      .toFile(
+        new URL(name.replace('.png', '-clean.png'), destination).pathname.replace(/^\/(\w:)/, '$1'),
+      );
   }
   console.log(`${name}: ${metadata.width}x${metadata.height}, ${metadata.format}`);
 }
