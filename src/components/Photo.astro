@@ -1,0 +1,11 @@
+---
+import { Picture } from 'astro:assets';
+import { images, type ImageKey } from '../data/images';
+import { translations, type Locale } from '../i18n';
+interface Props { image: ImageKey; locale: Locale; eager?: boolean; sizes?: string; class?: string; maxWidth?: number; }
+const { image, locale, eager = false, sizes = '(min-width: 1000px) 580px, 100vw', class: className, maxWidth = 1309 } = Astro.props;
+const source = images[image];
+const width = Math.min(source.width, maxWidth);
+const widths = [...new Set([320, 480, 640, 800, 1024, width].filter(size => size <= width))].sort((left, right) => left - right);
+---
+<Picture src={source} alt={translations[locale].images[image]} formats={['avif', 'webp']} fallbackFormat="jpg" width={width} widths={widths} sizes={sizes} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding="async" class={className} />

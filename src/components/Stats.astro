@@ -1,0 +1,7 @@
+---
+import { number, type Locale } from '../i18n';
+interface Props { values: number[]; labels: string[]; locale: Locale; }
+const { values, labels, locale } = Astro.props;
+---
+<div class="stats"><div class="container stats-grid">{values.map((value,index) => <div class="stat"><span class="stat-number" data-counter={value}>{number(value,locale)}</span><span class="stat-label">{labels[index]}</span></div>)}</div></div>
+<style>.stats{background:var(--stone);border-bottom:1px solid var(--line)}.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding-block:26px;gap:30px 20px}.stat{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--yellow);padding-left:16px}.stat-number{color:var(--blue);font-size:42px}.stat-label{color:var(--muted);font-size:14px;line-height:1.4}@media(min-width:600px){.stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));padding-block:32px}.stat-number{font-size:48px}}@media(min-width:1000px){.stats-grid{padding-block:36px}.stat{padding-left:28px}.stat-number{font-size:56px}.stat-label{font-size:15px}}</style>

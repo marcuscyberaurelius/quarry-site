@@ -1,0 +1,20 @@
+---
+import { ArrowUpRight, Layers, Droplets, Route, Mountain } from '@lucide/astro';
+import Photo from './Photo.astro';
+import { translations, href, number, type Locale } from '../i18n';
+import type { Product } from '../data/products';
+interface Props { product: Product; locale: Locale; }
+const { product, locale } = Astro.props;
+const text = translations[locale];
+const icons = { sand: Droplets, stone: Layers, base: Route, specialist: Mountain };
+const Icon = icons[product.category];
+const fraction = product.fraction ? `${product.fraction.map(value=>number(value,locale)).join('–')} ${text.common.mm}` : text.products.customFraction;
+---
+<article class="product-card" id={product.id} data-category={product.category}>
+  <div class:list={['product-visual',product.category]}>
+    {product.category === 'stone' ? <Photo image="gravel" locale={locale} sizes="(min-width: 1000px) 380px, (min-width: 600px) 45vw, 90vw" maxWidth={800}/> : <Icon size={72} stroke-width={1}/>}
+    <span class="fraction">{fraction}</span>
+  </div>
+  <div class="product-content"><p class="category">{text.products.categories[product.category]}</p><h3>{product.name[locale]}</h3><p class="use">{product.use[locale]}</p><p class="standard">{product.standard || text.products.noStandard}</p><a href={`${href(locale,'quote')}?product=${product.id}`} class="card-link" aria-label={`${text.common.requestQuote}: ${product.name[locale]}`}>{text.common.requestQuote}<ArrowUpRight size={20}/></a></div>
+</article>
+<style>.product-card{border:1px solid var(--line);background:#fff;border-radius:3px;overflow:hidden;display:flex;flex-direction:column;scroll-margin-top:110px;transition:border-color .2s}.product-card:hover,.product-card:focus-within{border-color:var(--blue)}.product-visual{height:180px;background:#e8e8e5;position:relative;display:grid;place-items:center;color:#64716e;background-image:linear-gradient(#ffffff35 1px,transparent 1px),linear-gradient(90deg,#ffffff35 1px,transparent 1px);background-size:24px 24px}.product-visual.sand{background-color:#e9e2d4;color:#88744d}.product-visual.base{background-color:#e1e5e7;color:#64747e}.product-visual.specialist{background-color:#e0e5df;color:#667b66}.product-visual :global(img){width:100%;height:180px;object-fit:cover}.fraction{position:absolute;bottom:14px;left:16px;padding:5px 10px;background:#fffef9;color:var(--ink);font-size:14px;line-height:1.5;font-weight:600;border:1px solid #14181f10}.product-content{padding:22px 22px 0;display:flex;flex-direction:column;flex:1}.category{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--blue);margin-bottom:10px}.product-card h3{font-size:29px}.use{font-size:16px;color:var(--muted);margin-top:14px;margin-bottom:22px}.standard{font-size:12px;color:var(--muted);margin-top:auto;margin-bottom:16px}.card-link{display:flex;justify-content:space-between;align-items:center;gap:14px;border-top:1px solid var(--line);padding:16px 0;min-height:54px;font-size:15px;font-weight:600;color:var(--blue)}.card-link:hover{text-decoration:underline;text-underline-offset:5px}</style>

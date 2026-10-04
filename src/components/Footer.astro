@@ -1,0 +1,20 @@
+---
+import { ArrowUpRight, Phone } from '@lucide/astro';
+import Logo from './Logo.astro';
+import { translations, href, navPages, type Locale, type Page } from '../i18n';
+import { demoCompany } from '../data/company';
+import { demoProducts } from '../data/products';
+interface Props { locale: Locale; page: Page; }
+const { locale, page } = Astro.props;
+const text = translations[locale];
+---
+<footer class="dark"><div class="container"><div class="footer-grid">
+  <div class="footer-brand"><a href={href(locale)} aria-label={text.brandFull}><Logo locale={locale} light/></a><p>{text.common.footer}</p><div class="socials" title={text.common.social}><span tabindex="0" role="img" aria-label={text.common.social}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/></svg></span><span tabindex="0" role="img" aria-label={text.common.social}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10v8M7 6v1M11 18v-8m0 4c0-5 6-5 6 0v4"/></svg></span></div></div>
+  <div><h2>{text.common.links}</h2><nav aria-label={text.common.links}>{navPages.map(item => <a href={href(locale,item)}>{text.nav[item]}</a>)}</nav></div>
+  <div><h2>{text.nav.products}</h2><nav aria-label={text.nav.products}>{[demoProducts[0],demoProducts[3],demoProducts[5],demoProducts[7],demoProducts[8]].map(product => <a href={`${href(locale,'products')}#${product.id}`}>{product.name[locale]}</a>)}</nav></div>
+  <div><h2>{text.common.contact}</h2><a href={`tel:${demoCompany.tel}`}>{demoCompany.phone}</a><a class="email" href={`mailto:${demoCompany.email}`}>{demoCompany.email}</a><p>{text.contact.addressText}</p><p class="hours">{text.common.weekdays}<br/>{text.common.saturday}</p></div>
+</div><div class="footer-bottom"><p>© {new Date().getFullYear()} {text.brandFull}. {text.common.rights}</p><p>{text.common.demo}</p></div></div></footer>
+{page !== 'quote' && <div class="bottom-bar"><a href={`tel:${demoCompany.tel}`}><Phone size={18}/>{text.common.call}</a><a class="bottom-quote" href={href(locale,'quote')}>{text.common.quote}<ArrowUpRight size={18}/></a></div>}
+<style>
+  footer{padding:54px 0 24px}.footer-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:34px}.footer-brand p{max-width:290px;margin-top:24px;font-size:16px}.footer-grid h2{font-family:var(--font-body);font-size:16px;font-weight:600;margin-bottom:18px;color:white}.footer-grid nav{display:grid;gap:0}.footer-grid a:not(.footer-brand a){display:flex;align-items:center;min-height:44px;font-size:16px;color:#cbd0d7}.footer-grid a:hover{color:white;text-decoration:underline;text-underline-offset:4px}.footer-grid p{font-size:16px}.footer-grid .email{overflow-wrap:anywhere;word-break:break-word}.hours{margin-top:18px}.socials{display:flex;gap:10px;margin-top:20px}.socials span{display:grid;place-items:center;min-width:44px;height:44px;border:1px solid #ffffff35;color:#cbd0d7}.footer-bottom{display:flex;flex-direction:column;gap:12px;border-top:1px solid #ffffff25;margin-top:44px;padding-top:24px}.footer-bottom p{font-size:13px;color:#b8bfc7}.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:1fr 1.5fr;background:var(--white);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:8px}.bottom-bar a{min-height:48px;display:flex;align-items:center;justify-content:center;gap:12px;font-weight:600;font-size:16px}.bottom-quote{background:var(--yellow);color:var(--ink);border-radius:2px}@media(min-width:600px){.footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(min-width:1000px){footer{padding-top:72px}.footer-grid{grid-template-columns:1.5fr .8fr 1fr 1.2fr;gap:40px}.footer-bottom{flex-direction:row;justify-content:space-between;gap:40px}.footer-bottom p:last-child{max-width:460px;text-align:right}.bottom-bar{display:none}}
+</style>

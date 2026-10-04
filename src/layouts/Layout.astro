@@ -1,0 +1,70 @@
+---
+import '@fontsource/barlow/latin-400.css';
+import '@fontsource/barlow/latin-500.css';
+import '@fontsource/barlow/latin-600.css';
+import '@fontsource/barlow/latin-800.css';
+import '@fontsource/barlow-condensed/latin-600.css';
+import '@fontsource/barlow-condensed/latin-700.css';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { images } from '../data/images';
+import { translations, href, type Locale, type Page } from '../i18n';
+interface Props { locale: Locale; page: Page; }
+const { locale, page } = Astro.props;
+const text = translations[locale];
+const [title, description] = text.meta[page];
+const canonical = new URL(href(locale, page), Astro.site);
+const og = await getImage({ src: images.quarry, format: 'jpg', width: 1024 });
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta name="theme-color" content="#1f4fa0"/>
+    <meta name="description" content={description}/>
+    <meta name="robots" content="noindex, nofollow"/>
+    <title>{title} | {text.brandFull}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="canonical" href={canonical}/>
+    {(['en','sq'] as const).map(language => <link rel="alternate" hreflang={language} href={new URL(href(language,page),Astro.site)}/>)}
+    <link rel="alternate" hreflang="x-default" href={new URL(href('en',page),Astro.site)}/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content={text.brandFull}/>
+    <meta property="og:title" content={`${title} | ${text.brandFull}`}/>
+    <meta property="og:description" content={description}/>
+    <meta property="og:url" content={canonical}/>
+    <meta property="og:locale" content={locale === 'sq' ? 'sq_AL' : 'en_GB'}/>
+    <meta property="og:locale:alternate" content={locale === 'sq' ? 'en_GB' : 'sq_AL'}/>
+    <meta property="og:image" content={new URL(og.src,Astro.site)}/>
+    <meta property="og:image:width" content="1024"/><meta property="og:image:height" content="559"/>
+    <meta property="og:image:alt" content={text.images.quarry}/>
+    <meta name="twitter:card" content="summary_large_image"/>
+  </head>
+  <body class:list={[{ 'has-bottom-bar': page !== 'quote' }]}>
+    <a class="skip-link" href="#main">{text.common.skip}</a>
+    <Header locale={locale} page={page}/>
+    <main id="main" tabindex="-1"><slot/></main>
+    <Footer locale={locale} page={page}/>
+    <script>
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!reduced.matches && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible'); observer.unobserve(entry.target);
+          if (entry.target instanceof HTMLElement && entry.target.dataset.counter) {
+            const element = entry.target;
+            const value = Number(element.dataset.counter);
+            const start = performance.now();
+            const formatter = new Intl.NumberFormat(document.documentElement.lang === 'sq' ? 'sq-AL' : 'en-GB');
+            const tick = (now: number) => { const progress = Math.min((now-start)/900,1); element.textContent = formatter.format(Math.round(value*(1-Math.pow(1-progress,3)))); if(progress<1) requestAnimationFrame(tick); };
+            requestAnimationFrame(tick);
+          }
+        }), { threshold:.12 });
+        document.querySelectorAll('[data-reveal], [data-counter]').forEach(element => { if(element.getBoundingClientRect().top > window.innerHeight) element.classList.add('reveal-ready'); observer.observe(element); });
+      }
+    </script>
+  </body>
+</html>

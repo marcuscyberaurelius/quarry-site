@@ -1,0 +1,12 @@
+---
+import { translations, type Locale } from '../i18n';
+interface Props { locale: Locale; light?: boolean; }
+const { locale, light = false } = Astro.props;
+const text = translations[locale];
+---
+<svg class:list={['logo', { light }]} viewBox="0 0 210 74" role="img" aria-label={text.brandFull} width="166" height="59">
+  <text x="0" y="48" font-family="Barlow, sans-serif" font-size="62" font-weight="800" fill="currentColor">{text.brand}</text>
+  <path d="M154 9h10v39h-10z" fill="#f5b800" />
+  <text x="1" y="68" font-family="Barlow, sans-serif" font-size="12" font-weight="600" fill="currentColor">{text.brandLine}</text>
+</svg>
+<style>.logo{color:var(--blue);width:155px;height:auto}.logo.light{color:white}@media(min-width:1000px){.logo{width:175px}}</style>
