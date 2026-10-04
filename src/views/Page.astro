@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Home from './Home.astro';
+import Products from './Products.astro';
+import Operations from './Operations.astro';
+import Projects from './Projects.astro';
+import About from './About.astro';
+import Quote from './Quote.astro';
+import Contact from './Contact.astro';
+import NotFound from './NotFound.astro';
+import type { Locale, Page } from '../i18n';
+interface Props { locale: Locale; page: Page; }
+const { locale, page } = Astro.props;
+const views = { home:Home, products:Products, operations:Operations, projects:Projects, about:About, quote:Quote, contact:Contact, '404':NotFound };
+const View = views[page];
+---
+<Layout locale={locale} page={page}><View locale={locale}/></Layout>

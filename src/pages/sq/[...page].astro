@@ -1,0 +1,8 @@
+---
+import PageView from '../../views/Page.astro';
+import { pages, type Page } from '../../i18n';
+export function getStaticPaths() { return [...pages,'404'].map(page=>({params:{page:page==='home'?undefined:page},props:{page}})); }
+interface Props { page: Page; }
+const { page } = Astro.props;
+---
+<PageView locale="sq" page={page}/>

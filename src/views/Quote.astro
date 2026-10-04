@@ -1,0 +1,13 @@
+---
+import { Phone } from '@lucide/astro';
+import Intro from '../components/Intro.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { translations, type Locale } from '../i18n';
+import { demoCompany } from '../data/company';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const text=translations[locale];
+---
+<Intro label={text.form.quoteLabel} title={text.form.quoteTitle} body={text.form.quoteIntro}/>
+<section class="section"><div class="container quote-layout"><EnquiryForm locale={locale} quote/><aside><h2>{text.form.nextTitle}</h2><ol>{text.form.nextSteps.map(([title,body],index)=><li><span>{String(index+1).padStart(2,'0')}</span><div><h3>{title}</h3><p>{body}</p></div></li>)}</ol><div class="urgent"><Phone size={28} stroke-width={1.3}/><h3>{text.form.urgent}</h3><p>{text.form.urgentBody}</p><a href={`tel:${demoCompany.tel}`}>{demoCompany.phone}</a><p class="fine">{text.common.weekdays}<br/>{text.common.saturday}</p></div></aside></div></section>
+<style>.quote-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:55px}aside{border-top:1px solid var(--line);padding-top:30px}aside h2{font-size:35px}aside ol{list-style:none;padding:0;margin:30px 0}aside li{display:flex;gap:20px;padding:23px 0;border-top:1px solid var(--line)}aside li>span{font:600 28px var(--font-heading);color:var(--blue)}aside h3{font-size:26px;line-height:1.15}aside li p{font-size:16px;color:var(--muted);margin-top:12px}.urgent{background:var(--stone);padding:28px}.urgent svg{color:var(--blue);margin-bottom:20px}.urgent p{margin-top:14px}.urgent>a{display:flex;align-items:center;min-height:48px;font:600 30px var(--font-heading);color:var(--blue);margin-top:15px}@media(min-width:1000px){.quote-layout{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:90px;align-items:start}aside{position:sticky;top:120px;border-top:0;padding:0}}</style>

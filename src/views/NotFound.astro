@@ -1,0 +1,12 @@
+---
+import { ArrowLeft } from '@lucide/astro';
+import { translations, href, type Locale } from '../i18n';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const text=translations[locale];
+---
+<section class="section tint contours"><div class="container"><p class="eyebrow">{text.notFound.label}</p><h1>{text.notFound.title}</h1><p class="lead">{text.notFound.body}</p><div class="actions"><a class="button" href={href(locale)}><ArrowLeft size={20}/>{text.common.back}</a><a class="button outline" href={href(locale,'products')}>{text.common.viewProducts}</a></div>{locale==='en' && <p class="alternate" lang="sq"><a class="text-link" href="/sq/404">{translations.sq.notFound.title}</a></p>}</div></section>
+<script>
+  if(window.location.pathname.startsWith('/sq/') && document.documentElement.lang!=='sq')window.location.replace('/sq/404');
+</script>
+<style>.section{min-height:440px}.lead{max-width:600px}.alternate{margin-top:36px}</style>

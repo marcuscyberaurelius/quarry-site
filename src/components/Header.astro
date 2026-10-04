@@ -8,7 +8,7 @@ interface Props { locale: Locale; page: Page; }
 const { locale, page } = Astro.props;
 const text = translations[locale];
 ---
-<div class="topbar"><div class="container top-inner"><div class="top-contact"><a href={`tel:${demoCompany.tel}`}><Phone size={13}/>{demoCompany.phone}</a><a href={`mailto:${demoCompany.email}`}><Mail size={14}/>{demoCompany.email}</a></div><div class="top-hours">{text.common.weekdays}<span class="top-divider"></span>{text.common.saturday}</div><LanguageSwitcher locale={locale} page={page}/></div></div>
+<aside class="topbar" aria-label={text.common.contact}><div class="container top-inner"><div class="top-contact"><a href={`tel:${demoCompany.tel}`}><Phone size={13}/>{demoCompany.phone}</a><a href={`mailto:${demoCompany.email}`}><Mail size={14}/>{demoCompany.email}</a></div><div class="top-hours">{text.common.weekdays}<span class="top-divider"></span>{text.common.saturday}</div><LanguageSwitcher locale={locale} page={page}/></div></aside>
 <header class="site-header" id="site-header">
   <div class="container nav-inner">
     <a class="logo-link" href={href(locale)} aria-label={text.brandFull}><Logo locale={locale}/></a>
